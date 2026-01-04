@@ -12,39 +12,103 @@ interface ProductState {
   loading: boolean;
   selectedProduct: any | null;
 
-  fetchProducts: (limit: number, skip: number) => Promise<void>;
+  page: number;
+  limit: number;
+  category: string | null;
+  searchQuery: string;
+
+  fetchProducts: () => Promise<void>;
+  setPage: (page: number) => void;
   searchProducts: (query: string) => Promise<void>;
   filterByCategory: (category: string) => Promise<void>;
   fetchProductById: (id: string) => Promise<void>;
 }
 
-export const useProductStore = create<ProductState>((set) => ({
+export const useProductStore = create<ProductState>((set, get) => ({
   products: [],
   total: 0,
   loading: false,
   selectedProduct: null,
 
-  fetchProducts: async (limit, skip) => {
+  page: 1,
+  limit: 10,
+  category: null,
+  searchQuery: "",
+
+  // ✅ Fetch paginated products (default list)
+  fetchProducts: async () => {
+    const { page, limit, category, searchQuery } = get();
+    const skip = (page - 1) * limit;
+
     set({ loading: true });
-    const data = await getProducts(limit, skip);
-    set({ products: data.products, total: data.total, loading: false });
+
+    let data;
+
+    if (searchQuery) {
+      data = await searchProducts(searchQuery);
+    } else if (category) {
+      data = await getProductsByCategory(category);
+    } else {
+      data = await getProducts(limit, skip);
+    }
+
+    set({
+      products: data.products,
+      total: data.total,
+      loading: false,
+    });
   },
 
+  // ✅ Change page (used by Pagination UI)
+  setPage: (page) => {
+    set({ page });
+  },
+
+  // ✅ Search products (resets pagination & category)
   searchProducts: async (query) => {
-    set({ loading: true });
+    set({
+      loading: true,
+      page: 1,
+      category: null,
+      searchQuery: query,
+    });
+
     const data = await searchProducts(query);
-    set({ products: data.products, total: data.total, loading: false });
+
+    set({
+      products: data.products,
+      total: data.total,
+      loading: false,
+    });
   },
 
+  // ✅ Filter by category (resets pagination & search)
   filterByCategory: async (category) => {
-    set({ loading: true });
+    set({
+      loading: true,
+      page: 1,
+      category,
+      searchQuery: "",
+    });
+
     const data = await getProductsByCategory(category);
-    set({ products: data.products, total: data.total, loading: false });
+
+    set({
+      products: data.products,
+      total: data.total,
+      loading: false,
+    });
   },
 
+  // ✅ Single product detail
   fetchProductById: async (id) => {
     set({ loading: true });
+
     const data = await getProductById(id);
-    set({ selectedProduct: data, loading: false });
+
+    set({
+      selectedProduct: data,
+      loading: false,
+    });
   },
 }));

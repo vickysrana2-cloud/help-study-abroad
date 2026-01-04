@@ -7,32 +7,67 @@ interface UserState {
   loading: boolean;
   selectedUser: any | null;
 
-  fetchUsers: (limit: number, skip: number) => Promise<void>;
+  page: number;
+  limit: number;
+
+  fetchUsers: () => Promise<void>;
+  setPage: (page: number) => void;
   searchUsers: (query: string) => Promise<void>;
   fetchUserById: (id: string) => Promise<void>;
 }
 
-export const useUserStore = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set, get) => ({
   users: [],
   total: 0,
   loading: false,
   selectedUser: null,
 
-  fetchUsers: async (limit, skip) => {
+  page: 1,
+  limit: 10,
+
+  // ✅ Fetch paginated users
+  fetchUsers: async () => {
+    const { page, limit } = get();
+    const skip = (page - 1) * limit;
+
     set({ loading: true });
+
     const data = await getUsers(limit, skip);
-    set({ users: data.users, total: data.total, loading: false });
+
+    set({
+      users: data.users,
+      total: data.total,
+      loading: false,
+    });
   },
 
+  // ✅ Change page (used by Pagination UI)
+  setPage: (page) => {
+    set({ page });
+  },
+
+  // ✅ Search users (resets pagination)
   searchUsers: async (query) => {
-    set({ loading: true });
+    set({ loading: true, page: 1 });
+
     const data = await searchUsers(query);
-    set({ users: data.users, total: data.total, loading: false });
+
+    set({
+      users: data.users,
+      total: data.total,
+      loading: false,
+    });
   },
 
+  // ✅ Single user detail
   fetchUserById: async (id) => {
     set({ loading: true });
+
     const data = await getUserById(id);
-    set({ selectedUser: data, loading: false });
+
+    set({
+      selectedUser: data,
+      loading: false,
+    });
   },
 }));
