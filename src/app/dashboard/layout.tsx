@@ -16,19 +16,19 @@ export default function DashboardLayout({
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
-  // ✅ Ensure client-only rendering
+
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // ✅ Redirect unauthenticated users
+ 
   useEffect(() => {
     if (mounted && status === "unauthenticated") {
       router.push("/login");
     }
   }, [mounted, status, router]);
 
-  // ✅ Prevent hydration mismatch
+ 
   if (!mounted) {
     return null;
   }

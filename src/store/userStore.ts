@@ -25,7 +25,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   page: 1,
   limit: 10,
 
-  // ✅ Fetch paginated users
+ 
   fetchUsers: async () => {
     const { page, limit } = get();
     const skip = (page - 1) * limit;
@@ -41,12 +41,12 @@ export const useUserStore = create<UserState>((set, get) => ({
     });
   },
 
-  // ✅ Change page (used by Pagination UI)
+
   setPage: (page) => {
     set({ page });
   },
 
-  // ✅ Search users (resets pagination)
+
   searchUsers: async (query) => {
     set({ loading: true, page: 1 });
 
@@ -59,7 +59,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     });
   },
 
-  // ✅ Single user detail
+ 
   fetchUserById: async (id) => {
     set({ loading: true });
 

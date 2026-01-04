@@ -29,12 +29,12 @@ export default function ProductsPage() {
 
   const [search, setSearch] = useState("");
 
-  // ✅ Fetch products whenever page changes
+
   useEffect(() => {
     fetchProducts();
   }, [page, fetchProducts]);
 
-  // ✅ Search handler
+
   const handleSearch = () => {
     if (search.trim()) {
       searchProducts(search);

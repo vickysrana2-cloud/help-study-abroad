@@ -29,12 +29,12 @@ export default function UsersPage() {
 
   const [search, setSearch] = useState("");
 
-  // ✅ Fetch users whenever page changes
+ 
   useEffect(() => {
     fetchUsers();
   }, [page, fetchUsers]);
 
-  // ✅ Search handler (resets pagination inside store)
+ 
   const handleSearch = () => {
     if (search.trim()) {
       searchUsers(search);

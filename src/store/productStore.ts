@@ -35,7 +35,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
   category: null,
   searchQuery: "",
 
-  // ✅ Fetch paginated products (default list)
+
   fetchProducts: async () => {
     const { page, limit, category, searchQuery } = get();
     const skip = (page - 1) * limit;
@@ -59,12 +59,12 @@ export const useProductStore = create<ProductState>((set, get) => ({
     });
   },
 
-  // ✅ Change page (used by Pagination UI)
+
   setPage: (page) => {
     set({ page });
   },
 
-  // ✅ Search products (resets pagination & category)
+
   searchProducts: async (query) => {
     set({
       loading: true,
@@ -82,7 +82,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     });
   },
 
-  // ✅ Filter by category (resets pagination & search)
+
   filterByCategory: async (category) => {
     set({
       loading: true,
@@ -100,7 +100,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     });
   },
 
-  // ✅ Single product detail
+
   fetchProductById: async (id) => {
     set({ loading: true });
 
