@@ -11,7 +11,7 @@ export default function UserTable({
     <Table>
       <TableBody>
         {users.map((user) => (
-          <TableRow key={user.id} onClick={() => onSelect(user.id)}>
+          <TableRow hover sx={{ cursor: "pointer" }} key={user.id} onClick={() => onSelect(user.id)}>
             <TableCell>{user.firstName}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>{user.company?.name}</TableCell>

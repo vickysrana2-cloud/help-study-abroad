@@ -1,45 +1,74 @@
+
+
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { loginUser } from "@/services/api";
-
 
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: {},
-        password: {},
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
-        if (!credentials) return null;
+        try {
+          const res = await fetch("https://dummyjson.com/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: credentials?.username,
+              password: credentials?.password,
+            }),
+          });
 
-        const user = await loginUser({
-          username: credentials.username as string,
-          password: credentials.password as string,
-        });
+          if (!res.ok) {
+            throw new Error("Invalid credentials");
+          }
 
-        if (user?.token) {
+          const user = await res.json();
           return user;
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
         }
-
-        return null;
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
+
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.accessToken = (user as any).token;
+      if (user) {
+        token.accessToken = user.token;
+        token.user = {
+          id: user.id,
+          username: user.username,
+          token: user.token,
+        };
+      }
       return token;
     },
+
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
+      session.user = token.user!;
+      session.accessToken = token.accessToken;
       return session;
     },
   },
+
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
+
+  session: {
+    strategy: "jwt",
+  },
+
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };
