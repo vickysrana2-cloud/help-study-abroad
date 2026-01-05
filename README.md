@@ -23,7 +23,6 @@ To build a modern, scalable, and responsive frontend application that:
 | Technology               | Purpose                        |
 | ------------------------ | ------------------------------ |
 | **Next.js (App Router)** | Routing, SSR, app structure    |
-| **React**                | UI rendering                   |
 | **Material UI (MUI)**    | UI components & responsiveness |
 | **Zustand**              | Global state management        |
 | **NextAuth**             | Authentication                 |
