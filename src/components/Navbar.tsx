@@ -23,6 +23,10 @@ export default function Navbar() {
           Products
         </Button>
 
+        <Button color="inherit" href="/dashboard">
+          Dashboard
+        </Button>
+
         <Button color="inherit" onClick={handleLogout}>
           Logout
         </Button>
