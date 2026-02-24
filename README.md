@@ -131,9 +131,9 @@ Zustand is used to manage:
 
 ---
 
-## Corrected & Recommended Project Structure
+## Project Structure
 
-> The following structure is **recommended and correct** for a Next.js App Router project using Zustand and MUI.
+> The structure for a Next.js App Router project using Zustand and MUI.
 
 ```
 src/
